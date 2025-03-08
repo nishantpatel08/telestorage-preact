@@ -1,0 +1,12 @@
+.root
+  position: absolute
+  right: 0
+  bottom: env(safe-area-inset-bottom, 0)
+  height: 48px
+  opacity: 1
+  background-color: transparent
+  transition: opacity .2s ease-in-out
+
+:global(.fullscreen)
+  .root
+    opacity: 0.5

@@ -1,0 +1,94 @@
+.root
+  position: relative
+  margin-bottom: 16px
+  display: flex
+  width: 100%
+  min-height: 64px
+  flex-shrink: 0
+  //border-bottom: 1px solid var(--item-border-color)
+  //border-radius: 8px 0 0 8px
+  background-color: inherit
+
+.preview
+  flex-shrink: 0
+  position: relative
+  width: 64px
+  height: 64px
+  border-radius: 8px
+  overflow: hidden
+  user-select: none
+
+  > canvas
+  > img
+  > div
+    position: absolute
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
+    width: 64px
+    height: 64px
+    border-radius: 8px
+
+  > img
+    display: block
+    object-fit: cover
+
+  &._icon
+    @media $mobile
+      width: 32px
+      height: 32px
+
+      > div
+        width: 32px
+        height: 32px
+
+  &._disabled
+    pointer-events: none
+    cursor: default
+
+.description
+  display: flex
+  flex-direction: column
+  justify-content: space-around
+  width: calc(100% - 64px)
+  padding-left: 16px
+  font-weight: var(--font-weight-content)
+  user-select: none
+
+  &._wide
+    @media $mobile
+      width: calc(100% - 32px)
+
+.title
+  width: calc(100% - 32px)
+  user-select: none
+  overflow-wrap: break-word
+  word-break: break-word
+
+.footer
+  width: calc(100% - 24px)
+  user-select: none
+
+  > span
+    margin-top: 4px
+    font-size: 12px
+    overflow-wrap: break-word
+    word-break: break-word
+
+.loader
+  position: absolute
+  top: 8px
+  right: 8px
+  width: 16px
+  height: 16px
+
+.menu
+  top: 0
+  right: -8px
+  width: 32px
+  height: 32px
+  border-radius: 0 8px 0 0
+
+._single
+  margin-bottom: 0

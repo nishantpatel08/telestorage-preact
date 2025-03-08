@@ -1,0 +1,36 @@
+.root
+  position: absolute
+  flex-shrink: 0
+  width: $content-width
+  max-width: calc(100% - 32px)
+  padding: 20px 0
+  transition: top 0.1s ease-out, opacity 0.4s ease-out
+  will-change: top
+
+  &._transparent
+    will-change: top, opacity
+
+  @media screen and (min-width: $sidebar-width + $content-width + 40px)
+    max-width: calc(100% - 40px)
+
+.content
+  position: relative
+  width: 100%
+  padding: 0 16px
+  border-radius: 8px
+  background-color: var(--content-item-background-color)
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02)
+
+.loader
+  position: absolute
+  top: 8px
+  right: 8px
+  width: 16px
+  height: 16px
+
+.menu
+  top: 0
+  right: 0
+  width: 32px
+  height: 32px
+  border-radius: 0 8px 0 0

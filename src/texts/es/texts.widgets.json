@@ -1,0 +1,28 @@
+{
+  "update": {
+    "title": "Actualizar",
+    "description": "Una nueva versión mejorada de la aplicación está disponible.",
+    "descriptionLink": "¿Qué hay de nuevo?",
+    "button": "Actualizar"
+  },
+  "error": {
+    "title": "Error",
+    "description": "Algo salió mal. El error ha sido enviado al desarrollador.",
+    "button": "Ok"
+  },
+  "install": {
+    "title": "Instalación",
+    "description": "Instale la aplicación para un uso más conveniente.",
+    "button": "Instalar en pc"
+  },
+  "newsChannel": {
+    "title": "Canal",
+    "description": "Únete al canal TgStorage para estar al día de todas las novedades.",
+    "button": "Entrar"
+  },
+  "sponsorship": {
+    "title": "Patrocinio",
+    "description": "Lamentablemente, no es posible seguir desarrollando la aplicación sin tu participación. Con solo €1 al mes podré continuar con ella.",
+    "button": "Patrocinador"
+  }
+}

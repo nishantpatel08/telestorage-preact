@@ -1,0 +1,32 @@
+.root
+  position: relative
+  display: flex
+  flex-shrink: 0
+  padding: 8px 0 8px calc(20px + env(safe-area-inset-left, 0))
+  background-color: inherit
+
+.title
+  flex-shrink: 0
+  display: block
+  margin: 0
+  padding: 0
+  width: calc(100% - 48px)
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+  font-size: 22px
+  font-weight: 700
+
+.menu
+  top: 0
+  right: 0
+  width: 52px
+  height: 42px
+
+._disabled
+  pointer-events: none
+  cursor: default
+  opacity: .5
+
+._offset
+  margin-top: 24px

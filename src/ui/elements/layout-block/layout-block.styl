@@ -1,0 +1,75 @@
+.root
+  margin: 0 auto
+  width: 100%
+
+._header
+  display: flex
+  justify-content: flex-end
+
+._wide
+  position: relative
+  z-index: 1
+  display: flex
+  flex-shrink: 0
+  width: 100vw
+  left: 50%
+  transform: translateX(-50%)
+  background-color: inherit
+
+._narrow
+  max-width: 350px
+
+  @media screen and (max-width: 369px) {
+    max-width: calc(100% - 20px)
+  }
+
+._middle
+  max-width: 480px
+
+  @media screen and (max-width: 519px) {
+    max-width: calc(100% - 20px)
+  }
+
+._group
+  align-items: center
+
+  > button
+    margin-left: auto
+    margin-right: auto
+    margin-bottom: 20px
+    max-width: 280px
+
+    &:first-of-type
+      margin-top: 20px
+
+    &:last-of-type
+      margin-bottom: 0
+
+  > span
+    > a:last-of-type:not(:first-of-type)
+      margin-left: 20px
+
+  @media $mobile
+    align-items: center
+
+    > span
+      margin-bottom: 12px
+
+      &:last-of-type:not(:first-of-type)
+        margin-bottom: 0
+
+  @media $desktop
+    > span
+      margin-bottom: 20px
+
+      &:last-of-type:not(:first-of-type)
+        margin-bottom: 0
+
+._icons
+  width: 300px
+  display: flex
+  justify-content: space-between
+  flex-shrink: 0
+
+  > svg
+    fill: var(--default-font-color)

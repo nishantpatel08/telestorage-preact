@@ -1,0 +1,64 @@
+.root
+  position: absolute
+  z-index: 12
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  background-color: var(--content-background-color)
+  transition: .2s ease-in-out
+  transition-property: background, color
+  user-select: none
+
+.slider
+  height: 100%
+
+.header
+  position: absolute
+  left: 0
+  top: 0
+  right: 0
+  display: flex
+  align-items: center
+  height: 48px
+  background-color: transparent
+
+  @media $mobile
+    padding-right: 20px
+
+.backButton
+  background-color: transparent
+
+.closeButton
+  margin-left: auto
+  background-color: transparent
+
+  @media $mobile
+    display: none
+
+.navButton
+  position: absolute
+  top: 48px
+  height: calc(100% - 96px - env(safe-area-inset-bottom, 0) - env(safe-area-inset-top, 0))
+  border-radius: 0
+  background-color: transparent
+
+  &._left
+    left: 0
+
+    > svg
+      transform: rotate(90deg)
+
+  &._right
+    right: 0
+
+    > svg
+      transform: rotate(270deg)
+
+:global(.fullscreen)
+  background-color: var(--color-black)
+  color: var(--color-white)
+
+  .header
+  .navButton
+    display: none

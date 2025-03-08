@@ -1,0 +1,143 @@
+.root
+  position: absolute
+  z-index: 4
+  display: flex
+  align-items: center
+  background-color: inherit
+  user-select: none
+
+  &::before
+    position: fixed
+    z-index: -1
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
+    display: none
+    content: ''
+    cursor: default
+
+.button
+  width: 100%
+  height: 100%
+
+  > svg
+    fill: var(--menu-icon-color)
+
+.dropdown
+  position: absolute
+  z-index: 5
+  min-width: 140px
+  border: 1px solid var(--dropdown-border-color)
+  border-radius: 8px
+  box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.12)
+  background-color: inherit
+
+.item
+  margin: 0
+  display: flex
+  align-items: center
+  flex-shrink: 0
+  height: 40px
+  padding: 0 16px
+  border-top: 1px solid var(--dropdown-item-border-color)
+  cursor: pointer
+  font-size: 14px
+  font-family: inherit
+  white-space: nowrap
+  text-decoration: none
+  background-color: inherit
+  color: var(--default-font-color)
+  transition: .2s ease-in
+  transition-property: background, color
+
+  > svg
+    margin: 0 14px 1px 0
+    width: 16px
+    height: 16px
+    fill: var(--color-light-2)
+    transition: fill .2s ease-in
+    pointer-events: none
+
+  &:first-child
+    border-top-left-radius: 8px
+    border-top-right-radius: 8px
+    border-top: none
+
+  &:last-child
+    border-bottom-left-radius: 8px
+    border-bottom-right-radius: 8px
+
+  &._warning
+    color: var(--color-red)
+
+    > svg
+      fill: var(--color-red)
+
+  &._danger
+    background-color: var(--color-red)
+    color: var(--color-white)
+
+    > svg
+      fill: var(--color-white)
+
+._horizontal
+  .button > svg
+    transform: rotate(90deg)
+
+._expanded
+  z-index: 5
+
+  &::before
+    display: block
+
+._position-right
+  .dropdown
+    right: 10px
+
+._position-top
+  .dropdown
+    top: 10px
+
+._position-bottom
+  .dropdown
+    bottom: 10px
+
+._animation
+  .dropdown
+    transform: scale(0)
+    opacity: 0
+
+  &._position-right._position-top
+    .dropdown
+      transform-origin: 100% 0
+
+  &._position-right._position-bottom
+    .dropdown
+      transform-origin: 100% 100%
+
+._animationFallback
+  .dropdown
+    animation-name: scaleLeft
+    animation-duration: .2s
+    animation-timing-function: ease-in-out
+    animation-fill-mode: forwards
+    will-change: transform, opacity
+
+  &._position-right._position-top
+    .dropdown
+      transform-origin: 100% 0
+
+  &._position-right._position-bottom
+    .dropdown
+      transform-origin: 100% 100%
+
+@keyframes scaleLeft
+  0%
+    transform: scale(0)
+    opacity: 0
+  50%
+    opacity: 1
+  100%
+    transform: scale(1)
+    opacity: 1

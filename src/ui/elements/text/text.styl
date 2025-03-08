@@ -1,0 +1,77 @@
+.root
+  display: flex
+  align-items: center
+  flex-shrink: 0
+  margin: 0
+  padding: 0
+  white-space: pre-line
+
+  > a
+    text-decoration: none
+    color: var(--content-link-color)
+
+  > br + a
+    display: inline-block
+    margin-top: 4px
+
+  > svg
+    margin-left: 8px
+    width: 20px
+    height: 20px
+    fill: var(--color-light-2)
+    cursor: pointer
+
+._withLink
+  display: inline-block
+  width: 100%
+
+._mCenter
+  @media $mobile
+    text-align: center
+
+._large
+  font-size: 18px
+
+._small
+  font-size: 14px
+
+._medium
+  font-size: 15px
+
+._bold
+  font-weight: 500
+
+._italic
+  font-style: italic
+
+._center
+  justify-content: center
+  text-align: center
+
+._justify
+  width: 100%
+  justify-content: space-between
+  text-align: justify
+
+._grey
+  color: var(--color-light-2)
+
+._brand
+  color: var(--color-brand)
+
+._transparent
+  opacity: 0.4
+
+._uppercase
+  text-transform: uppercase
+  word-spacing: 4px
+
+._ellipsis
+  display: block
+  flex-shrink: 1
+  text-overflow: ellipsis
+  white-space: nowrap
+  overflow: hidden
+
+._capitalize
+  text-transform: capitalize

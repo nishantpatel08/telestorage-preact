@@ -1,0 +1,126 @@
+:global
+  @font-face
+    font-family: "Segoe UI Light"
+    font-weight: 400
+    src: local("Segoe UI Semilight")
+
+light-theme()
+  --font-family-ui: -apple-system, BlinkMacSystemFont, "Roboto", "Arial", system-ui, sans-serif
+  --font-family-content: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Arial", system-ui, sans-serif
+  --font-weight-ui: 500
+  --font-weight-content: 400
+
+  --color-brand: $color-brand
+  --color-white: #ffffff
+  --color-white-01: alpha(#ffffff, 0.1)
+  --color-white-05: alpha(#ffffff, 0.5)
+  --color-black: #000000
+  --color-black-0025: alpha(#000000, 0.025)
+  --color-black-01: alpha(#000000, 0.1)
+  --color-black-012: alpha(#000000, 0.12)
+  --color-black-02: alpha(#000000, 0.2)
+  --color-black-05: alpha(#000000, 0.5)
+  --color-red: #da5b4f
+  --color-light-1: #707579
+  --color-light-2: #8e9295
+  --color-light-3: #c8c7cc
+  --color-light-4-l5: lighten(#f4f4f5, 5%)
+  --color-light-4: #f4f4f5
+  --color-light-4-08: alpha(#f4f4f5, 0.8)
+  --color-light-4-d5: darken(#f4f4f5, 5%)
+  --color-dark-1: #191b1d
+  --color-dark-1-08: alpha(#191b1d, 0.8)
+  --color-dark-2: #212427
+  --color-dark-2-d15: darken(#212427, 15%)
+  --color-dark-3-l20: lighten(#26292c, 20%)
+  --color-dark-3-l10: lighten(#26292c, 10%)
+  --color-dark-3-l5: lighten(#26292c, 5%)
+  --color-dark-3-l1: lighten(#26292c, 1%)
+  --color-dark-3: #26292c
+  --color-blue-1: #81909f
+  --color-blue-1-d25: darken(#81909f, 25%)
+  --color-blue-1-d95: darken(#81909f, 80%)
+  --color-blue-4: #f7f9fa
+  --color-blue-4-d6: darken(#f7f9fa, 6%)
+
+  --default-font-color: var(--color-black)
+  --disabled-font-color: var(--color-light-3)
+  --default-background-color: var(--color-white)
+  --sidebar-background-color: var(--color-white)
+  --sidebar-header-background-color: var(--color-blue-4)
+  --content-background-color: var(--color-light-4)
+  --content-background-color-08: var(--color-light-4-08)
+  --content-form-background-color: var(--color-blue-4)
+  --content-form-shadow-color: var(--color-blue-4-d6)
+  --content-item-background-color: var(--color-white)
+  --content-monospace-background-color: var(--color-black-0025)
+  --content-link-color: var(--color-blue-1-d25)
+  --dropdown-border-color: var(--color-blue-4)
+  --dropdown-item-border-color: var(--color-light-4)
+  --icon-background-color: var(--color-white)
+  --icon-border-color: var(--color-black)
+  --icon-second-border-color: var(--color-black-01)
+  --avatar-background-color: var(--color-light-4)
+  --item-border-color: var(--color-light-4)
+  --form-border-color: var(--color-light-4-d5)
+  --form-item-border-color: var(--color-light-4)
+  --menu-icon-color: var(--color-light-4-d5)
+  --scrollbar-background-color: var(--color-light-4)
+  --scrollbar-color: var(--color-light-3)
+  --scrollbar-inverted-background-color: var(--color-light-4)
+  --scrollbar-inverted-color: var(--color-light-3)
+  --progress-background-color: var(--color-light-3)
+  --widget-background-color: var(--color-blue-4)
+  --widget-shadow-color: var(--color-blue-4-d6)
+  --picture-border-color: var(--color-black-05)
+
+dark-theme()
+  color-scheme: dark
+
+  --font-family-content: -apple-system, BlinkMacSystemFont, "Segoe UI Light", "Roboto", "Arial", system-ui, sans-serif
+
+  --color-white: #fafafa
+
+  --default-font-color: var(--color-white)
+  --disabled-font-color: var(--color-dark-3-l10)
+  --default-background-color: var(--color-dark-1)
+  --sidebar-background-color: var(--color-dark-2)
+  --sidebar-header-background-color: var(--color-dark-3)
+  --content-background-color: var(--color-dark-1)
+  --content-background-color-08: var(--color-dark-1-08)
+  --content-form-background-color: var(--color-dark-3)
+  --content-form-shadow-color: var(--color-black-012)
+  --content-item-background-color: var(--color-dark-2-d15)
+  --content-monospace-background-color: var(--color-black-01)
+  --content-link-color: var(--color-blue-1)
+  --dropdown-border-color: var(--color-dark-3-l20)
+  --dropdown-item-border-color: var(--color-dark-3)
+  --icon-background-color: var(--color-dark-3)
+  --icon-border-color: var(--color-white)
+  --icon-second-border-color: var(--color-white-01)
+  --avatar-background-color: var(--color-dark-1-08)
+  --item-border-color: var(--color-dark-3)
+  --form-border-color: var(--color-dark-3-l5)
+  --form-item-border-color: var(--color-dark-3-l1)
+  --menu-icon-color: var(--color-dark-3-l5)
+  --scrollbar-background-color: var(--color-dark-1)
+  --scrollbar-color: var(--color-dark-2)
+  --scrollbar-inverted-background-color: var(--color-dark-2)
+  --scrollbar-inverted-color: var(--color-dark-1)
+  --progress-background-color: var(--color-dark-2)
+  --widget-background-color: var(--color-dark-3)
+  --widget-shadow-color: var(--color-black-012)
+  --picture-border-color: var(--color-white-01)
+
+:root
+  light-theme()
+
+  @media $dark
+    dark-theme()
+
+:global
+  html[data-theme='light']
+    light-theme()
+
+  html[data-theme='dark']
+    dark-theme()

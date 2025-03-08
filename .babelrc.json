@@ -1,0 +1,15 @@
+{
+  "presets": [
+    ["@babel/preset-env", {
+      "modules": false,
+      "bugfixes": true,
+      "corejs": 3,
+      "useBuiltIns": "entry"
+     }],
+    ["@babel/typescript", { "jsxPragma": "h" }]
+  ],
+  "plugins": [
+    ["@babel/plugin-transform-react-jsx", { "pragma": "h", "pragmaFrag": "Fragment" }],
+    ["@babel/plugin-proposal-export-namespace-from"]
+  ]
+}

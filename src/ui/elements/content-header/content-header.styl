@@ -1,0 +1,47 @@
+.root
+  position: relative
+  z-index: 6
+  display: flex
+  align-items: center
+  flex-shrink: 0
+  width: 100%
+  height: calc(48px + env(safe-area-inset-top, 0))
+  padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) 0 env(safe-area-inset-left, 0)
+  background-color: var(--sidebar-header-background-color)
+  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.12)
+
+  > button:last-child
+    margin-left: auto
+
+.title
+  display: block
+  margin: 0
+  padding: 0
+  font-size: 17px
+  line-height: 1
+  user-select: none
+
+.input
+  height: 100%
+  padding-right: 52px
+
+  > input
+    height: 100%
+    padding: 0
+    font-family: var(--font-family-ui)
+
+  > div
+    width: 52px
+    cursor: pointer
+
+.loader
+  margin-left: auto
+  margin-right: 18px
+  width: 18px
+  height: 18px
+
+._withoutDesktopBack
+  @media $desktop
+    padding-left: 20px
+    .backButton
+      display: none

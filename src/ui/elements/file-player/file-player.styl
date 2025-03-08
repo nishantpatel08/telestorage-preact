@@ -1,0 +1,124 @@
+.video
+  width: 100%
+  height: auto
+  max-width: 100%
+  max-height: calc(100% - env(safe-area-inset-bottom, 0) - env(safe-area-inset-top, 0))
+
+  &._hidden
+    display: none
+
+  &::-webkit-media-controls
+    position: absolute
+    z-index: -1
+    display: none !important
+    opacity: 0
+
+.audio
+  display: block
+  width: 100%
+
+  &._hidden
+    display: none
+
+.description
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  width: 100%
+  height: calc(100% - 96px - env(safe-area-inset-bottom, 0) - env(safe-area-inset-top, 0))
+  max-width: calc(100% - 96px)
+  padding: 0 env(safe-area-inset-right, 0) 0 env(safe-area-inset-left, 0)
+  transition: opacity .3s ease-in-out
+
+  &._transparent
+    opacity: 0.05
+
+.descriptionText
+  width: 100%
+  text-align: center
+
+  &:first-child
+    font-size: 16px
+
+  &:last-child
+    font-size: 24px
+
+  & + .descriptionText
+    margin-top: 8px
+
+
+.playButton
+  position: absolute
+  width: 64px
+  height: 64px
+  border-radius: 50%
+  background-color: var(--color-black-05)
+  opacity: 1
+  transition: opacity .3s ease-in-out
+
+  &._hidden
+    opacity: 0
+    transition-duration: .2s
+    transition-timing-function: ease-in
+
+  &._border
+    border: 2px solid var(--color-white)
+
+.loader
+  position: absolute
+
+.controls
+  position: absolute
+  left: 0
+  right: 0
+  bottom: 0
+  z-index: 1
+  display: flex
+  justify-content: space-between
+  align-items: center
+  width: calc(100% - 54px)
+  height: calc(48px + env(safe-area-inset-bottom, 0))
+  padding: 0 env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0)
+  opacity: 1
+  transition: opacity .3s ease-in-out
+
+  &::after
+    position: absolute
+    z-index: 1
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
+    display: none
+    cursor: default
+    content: ''
+
+  &._disabled
+    opacity: 0.1
+    pointer-events: none
+
+  &._hidden
+    opacity: 0
+    transition-duration: .2s
+    transition-timing-function: ease-in
+
+    &::after
+      display: block
+
+  &._fullscreen
+    padding-left: calc(20px + env(safe-area-inset-left, 0))
+
+    &::after
+      right: -54px
+      z-index: -1
+      display: block
+      background-color: var(--color-black-05)
+
+.time
+  margin-left: 20px
+  flex-shrink: 0
+  font-size: 10px
+  white-space: nowrap
+  font-feature-settings: "tnum"
+  font-variant-numeric: tabular-nums
