@@ -6,7 +6,7 @@ import cn from 'classnames'
 
 import type { Message } from '~/core/store'
 import { useUpdatableRef } from '~/tools/hooks'
-import { Menu } from '~/ui/elements/menu'
+// import { Menu } from '~/ui/elements/menu'
 import type { Props as MenuProps } from '~/ui/elements/menu'
 import { Loader } from '~/ui/elements/loader'
 
@@ -34,7 +34,7 @@ export const ContentItem: FC<Props> = memo(({
   resizeObserver,
   intersectionObserver,
   loading,
-  menu,
+  // menu,
   onDelete,
 }) => {
   const elRef = useRef<HTMLDivElement>(null)
@@ -94,13 +94,13 @@ export const ContentItem: FC<Props> = memo(({
           <Loader class={styles.loader} grey/>
         )}
 
-        {(!loading && menu) && (
+        {/* {(!loading && menu) && (
           <Menu
             {...menu}
             class={styles.menu}
             parentRef={elRef}
           />
-        )}
+        )} */}
 
         {last && (
           <div

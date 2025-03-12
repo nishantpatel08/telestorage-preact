@@ -9,15 +9,15 @@ import { useTexts, useQuickEditMessage } from '~/core/hooks'
 import { COPY_TIMEOUT, copyText } from '~/tools/copy-text'
 import { shareText, checkIsSharingSupported } from '~/tools/share-data'
 import { checkIsChecklistMessage, checkIsParentFilesMessage, parseParentFilesMessage } from '~/tools/handle-content'
-import { normalizeMessageText } from '~/tools/handle-content-text'
+// import { normalizeMessageText } from '~/tools/handle-content-text'
 import { ContentItem } from '~/ui/elements/content-item'
-import { ContentItemHeader } from '~/ui/elements/content-item-header'
-import { ContentItemText } from '~/ui/elements/content-item-text'
-import { ContentItemChecklist } from '~/ui/elements/content-item-checklist'
+// import { ContentItemHeader } from '~/ui/elements/content-item-header'
+// import { ContentItemText } from '~/ui/elements/content-item-text'
+// import { ContentItemChecklist } from '~/ui/elements/content-item-checklist'
 
 import { StorageContentMessageMediaList } from './storage.content-message-media-list'
 import { StorageContentMessageMediaItem } from './storage.content-message-media-item'
-import { StorageContentMessageWebpage } from './storage.content-message-webpage'
+// import { StorageContentMessageWebpage } from './storage.content-message-webpage'
 
 type Props = {
   folder: Folder
@@ -52,24 +52,24 @@ export const StorageContentMessageItem: FC<Props> = memo(({
   const [coping, setCoping] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const isChecklist = useMemo(() => {
-    return checkIsChecklistMessage(message.text)
-  }, [message.text])
+  // const isChecklist = useMemo(() => {
+  //   return checkIsChecklistMessage(message.text)
+  // }, [message.text])
 
-  const hasMedia = useMemo(() => {
-    return !!message.media || !!message.mediaMessages?.length
-  }, [message.media, message.mediaMessages?.length])
+  // const hasMedia = useMemo(() => {
+  //   return !!message.media || !!message.mediaMessages?.length
+  // }, [message.media, message.mediaMessages?.length])
 
-  const hasWebpage = useMemo(() => {
-    return !!message.webpage
-  }, [message.webpage])
+  // const hasWebpage = useMemo(() => {
+  //   return !!message.webpage
+  // }, [message.webpage])
 
-  const normalizedText = useMemo(() => {
-    const text = normalizeMessageText(message.text, message.entities)
-    return checkIsParentFilesMessage(text) ?
-      parseParentFilesMessage(text).text :
-      text
-  }, [message.text, message.entities])
+  // const normalizedText = useMemo(() => {
+  //   const text = normalizeMessageText(message.text, message.entities)
+  //   return checkIsParentFilesMessage(text) ?
+  //     parseParentFilesMessage(text).text :
+  //     text
+  // }, [message.text, message.entities])
 
   const copingText = useMemo(() => {
     return checkIsParentFilesMessage(message.text) ?
@@ -175,14 +175,14 @@ export const StorageContentMessageItem: FC<Props> = memo(({
       emptyText={texts.emptyMessage}
       onDelete={onDelete}
     >
-      <ContentItemHeader
+      {/* <ContentItemHeader
         date={message.date}
         fwd={message.fwd}
         fwdTitle={texts.messageFwdTitle}
         fwdFromTitle={texts.messageFwdFromTitle}
-      />
+      /> */}
 
-      {isChecklist ? (
+      {/* {isChecklist ? (
         <ContentItemChecklist
           text={normalizedText}
           loading={loading || editing}
@@ -194,15 +194,15 @@ export const StorageContentMessageItem: FC<Props> = memo(({
           emptyText={texts.emptyMessage}
           empty={!normalizedText && !hasMedia && !hasWebpage}
         />
-      )}
+      )} */}
 
-      {hasWebpage && (
+      {/* {hasWebpage && (
         <StorageContentMessageWebpage
           folder={folder}
           message={message}
           mediaLoadAvailable={visible}
         />
-      )}
+      )} */}
 
       {!!message.media && (
         <StorageContentMessageMediaItem
