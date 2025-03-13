@@ -164,6 +164,23 @@ export const FilePlayer: FC<Props> = memo(({
     }
   }, [isFullscreen, controlsHidden, hideControlsAfterTimeout])
 
+  // New seek functions
+  const seekBackward = useCallback((ev: Event) => {
+    ev.stopPropagation()
+    if (!playerRef.current) return
+    const newTime = Math.max(0, playerRef.current.currentTime - 10)
+    playerRef.current.currentTime = newTime
+    setProgress(newTime)
+  }, [playerRef, setProgress])
+
+  const seekForward = useCallback((ev: Event) => {
+    ev.stopPropagation()
+    if (!playerRef.current || !duration) return
+    const newTime = Math.min(duration, playerRef.current.currentTime + 10)
+    playerRef.current.currentTime = newTime
+    setProgress(newTime)
+  }, [playerRef, duration, setProgress])
+
   useEffect(() => {
     if (!fileStreamUrl) return
     setUrl(fileStreamUrl)
@@ -270,7 +287,6 @@ export const FilePlayer: FC<Props> = memo(({
           onPlay={handlePlayStart}
           onPlaying={handlePlayStart}
           onWaiting={handleWaiting}
-          //onCanPlay={isSafari ? undefined : handleCanPlay}
           onCanPlayThrough={handleCanPlay}
         />
       ) : isAudio ? (
@@ -342,13 +358,37 @@ export const FilePlayer: FC<Props> = memo(({
         onMouseMove={prevent}
         onTouchMove={prevent}
       >
-        {!isFullscreen && (
+        
+        <Fragment>
+          <Button
+            square
+            onClick={seekBackward}
+          >
+            <svg width="800px" height="800px" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="stroke-width:3; stroke:#ffffff; fill:none;">
+              <polyline points="9.57 15.41 12.17 24.05 20.81 21.44" style="stroke-linecap:round;"/>
+              <path d="M26.93,41.41V23a.09.09,0,0,0-.16-.07s-2.58,3.69-4.17,4.78" style="stroke-linecap:round;"/>
+              <rect x="32.19" y="22.52" width="11.41" height="18.89" rx="5.7"/>
+              <path d="M12.14,23.94a21.91,21.91,0,1,1-.91,13.25" style="stroke-linecap:round;"/>
+            </svg>
+
+          </Button>
           <Button
             icon={playing ? 'pause' : 'play'}
             square
             onClick={togglePlay}
           />
-        )}
+          <Button
+            square
+            onClick={seekForward}
+          >
+            <svg width="800px" height="800px" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="stroke-width:3; stroke:#ffffff; fill:none;">
+              <polyline points="54.43 15.41 51.83 24.05 43.19 21.44" style="stroke-linecap:round;"/>
+              <path d="M24.00,41.41V23a.09.09,0,0,0-.16-.07s-2.58,3.69-4.17,4.78" style="stroke-linecap:round;"/>
+              <rect x="30.00" y="22.52" width="11.41" height="18.89" rx="5.7"/>
+              <path d="M51.86,23.94a21.91,21.91,0,1,0,.91,13.25" style="stroke-linecap:round;"/>
+            </svg>
+          </Button>
+        </Fragment>
 
         <Range
           class={styles.progress}
@@ -359,13 +399,11 @@ export const FilePlayer: FC<Props> = memo(({
           onChange={changeProgress}
         />
 
-        {(
-          <div class={styles.time}>
-            {progress ? formatDuration(progress) : '00:00'}
-            {' / '}
-            {duration ? formatDuration(duration) : '00:00'}
-          </div>
-        )}
+        <div class={styles.time}>
+          {progress ? formatDuration(progress) : '00:00'}
+          {' / '}
+          {duration ? formatDuration(duration) : '00:00'}
+        </div>
       </div>
     </Fragment>
   )
