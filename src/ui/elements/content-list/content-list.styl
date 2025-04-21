@@ -1,19 +1,18 @@
 .root
-  position: relative
-  top: env(safe-area-inset-top, 0)
-  display: flex
-  flex-direction: column
-  align-items: center
-  width: calc(100% - env(safe-area-inset-right, 0))
-  height: calc(100% - 96px - env(safe-area-inset-bottom, 0) - env(safe-area-inset-top, 0))
   width: 100%
-
   overflow-y: scroll
   overflow-y: overlay
   -webkit-overflow-scrolling: touch
   scroll-behavior: smooth
   scrollbar-width: thin
   scrollbar-color: var(--scrollbar-color) var(--scrollbar-background-color)
+
+  --auto-grid-min-size: 12rem
+  display: -ms-grid
+  display: grid
+  grid-template-columns: repeat(auto-fill, minmax(var(--auto-grid-min-size), 1fr))
+  gap: 22px
+  padding: 0 15px 70px
 
   &::-webkit-scrollbar
     position: absolute

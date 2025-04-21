@@ -80,11 +80,6 @@ export const ContentItem: FC<Props> = memo(({
         styles.root,
         typeof offset !== 'number' && styles._transparent
       )}
-      style={{
-        top: `${offset}px`,
-        display: visible ? 'block' : 'none',
-        opacity: typeof offset !== 'number' ? 0 : 1
-      }}
       ref={elRef}
     >
       <div class={styles.content}>

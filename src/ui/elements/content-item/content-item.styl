@@ -1,17 +1,6 @@
 .root
-  position: absolute
-  flex-shrink: 0
-  width: 225px
-  max-width: calc(100% - 32px)
-  padding: 20px 0
+  width: 100%
   transition: top 0.1s ease-out, opacity 0.4s ease-out
-  will-change: top
-
-  &._transparent
-    will-change: top, opacity
-
-  @media screen and (min-width: $sidebar-width + $content-width + 40px)
-    max-width: calc(100% - 40px)
 
 .content
   position: relative
