@@ -7,12 +7,12 @@
   scrollbar-width: thin
   scrollbar-color: var(--scrollbar-color) var(--scrollbar-background-color)
 
-  --auto-grid-min-size: 12rem
+  --auto-grid-min-size: 10rem
   display: -ms-grid
   display: grid
   grid-template-columns: repeat(auto-fill, minmax(var(--auto-grid-min-size), 1fr))
-  gap: 22px
-  padding: 0 15px 70px
+  gap: 15px
+  padding: 30px 15px 70px
 
   &::-webkit-scrollbar
     position: absolute
@@ -30,6 +30,8 @@
     display: none
 
   @media screen and (min-width: $sidebar-width + $content-width + 40px)
+    --auto-grid-min-size: 12rem
+    gap: 22px
     &::-webkit-scrollbar
       width: 8px
 
