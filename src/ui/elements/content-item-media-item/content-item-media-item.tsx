@@ -76,6 +76,22 @@ export const ContentItemMediaItem: FC<Props> = memo(({
         )}
         ref={elRef}
       >
+        <div class={styles.description}>
+          <Text class={styles.title} grey small ellipsis>
+            {media.name}
+          </Text>
+          <div class={styles.footer}>
+            <Text grey ellipsis>
+              {formatSize(media.originalSize)}
+            </Text>
+            {typeof downloadingProgress === 'number' && (
+              <Text grey ellipsis>
+                {`${downloadingProgress}%`}
+              </Text>
+            )}
+          </div>
+        </div>
+        
         <div
           class={styles.preview}
           onClick={(isImage || isVideo || isAudio) ? handlePreviewClick : undefined}
@@ -102,22 +118,6 @@ export const ContentItemMediaItem: FC<Props> = memo(({
               isAudio={isAudio}
             />
           )}
-        </div>
-
-        <div class={styles.description}>
-          <Text class={styles.title} grey small ellipsis>
-            {media.name}
-          </Text>
-          <div class={styles.footer}>
-            <Text grey ellipsis>
-              {formatSize(media.originalSize)}
-            </Text>
-            {typeof downloadingProgress === 'number' && (
-              <Text grey ellipsis>
-                {`${downloadingProgress}%`}
-              </Text>
-            )}
-          </div>
         </div>
 
         {(loading || (downloading && typeof downloadingProgress !== 'number')) && (

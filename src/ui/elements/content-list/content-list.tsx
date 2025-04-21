@@ -15,7 +15,7 @@ export const ContentList: FC<Props> = ({
   fullHeight
 }) => {
   return (
-    <main
+    <div
       class={cn(
         styles.root,
         fullHeight && styles._fullHeight
@@ -23,6 +23,6 @@ export const ContentList: FC<Props> = ({
       ref={intersectionRef}
     >
       {children}
-    </main>
+    </div>
   )
 }
