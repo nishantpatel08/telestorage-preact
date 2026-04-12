@@ -10,8 +10,17 @@
   &._transparent
     will-change: top, opacity
 
+  &._grid
+    max-width: none
+    padding: 20px 0
+    transition: top 0.1s ease-out, left 0.1s ease-out, opacity 0.4s ease-out
+    will-change: top, left
+
   @media screen and (min-width: $sidebar-width + $content-width + 40px)
     max-width: calc(100% - 40px)
+
+    &._grid
+      max-width: none
 
 .content
   position: relative

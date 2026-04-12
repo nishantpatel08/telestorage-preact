@@ -25,6 +25,8 @@ type Props = {
   offset: number | undefined
   visible: boolean
   last: boolean
+  columnCount?: number
+  columnIndex?: number
   resizeObserver?: ResizeObserver
   intersectionObserver: IntersectionObserver | undefined
   onViewMedia?: (id: string) => void
@@ -39,6 +41,8 @@ export const StorageContentMessageItem: FC<Props> = memo(({
   offset,
   visible,
   last,
+  columnCount = 1,
+  columnIndex = 0,
   resizeObserver,
   intersectionObserver,
   onViewMedia,
@@ -168,6 +172,8 @@ export const StorageContentMessageItem: FC<Props> = memo(({
       offset={offset}
       visible={visible}
       last={last}
+      columnCount={columnCount}
+      columnIndex={columnIndex}
       resizeObserver={resizeObserver}
       intersectionObserver={intersectionObserver}
       loading={loading || editing}

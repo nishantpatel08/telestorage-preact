@@ -17,6 +17,8 @@ type Props = {
   offset: number | undefined
   visible: boolean
   last: boolean
+  columnCount?: number
+  columnIndex?: number
   resizeObserver?: ResizeObserver
   intersectionObserver: IntersectionObserver | undefined
   loading?: boolean
@@ -31,6 +33,8 @@ export const ContentItem: FC<Props> = memo(({
   offset,
   visible,
   last,
+  columnCount = 1,
+  columnIndex = 0,
   resizeObserver,
   intersectionObserver,
   loading,
@@ -73,15 +77,29 @@ export const ContentItem: FC<Props> = memo(({
     onDeleteRef.current?.(messageIdRef.current)
   }, [])
 
+  const isGrid = columnCount > 1
+  const gridGapPx = 12
+  const gridStyle = isGrid ? {
+    left: `calc(${columnIndex} * ((100% - ${(columnCount - 1) * gridGapPx}px) / ${columnCount} + ${gridGapPx}px))`,
+    width: `calc((100% - ${(columnCount - 1) * gridGapPx}px) / ${columnCount})`
+  } : {}
+  const listCenterStyle = !isGrid ? {
+    left: '50%',
+    transform: 'translateX(-50%)'
+  } : {}
+
   return (
     <div
       id={`${message.id}`}
       class={cn(
         styles.root,
-        typeof offset !== 'number' && styles._transparent
+        typeof offset !== 'number' && styles._transparent,
+        isGrid && styles._grid
       )}
       style={{
         top: `${offset}px`,
+        ...listCenterStyle,
+        ...gridStyle,
         display: visible ? 'block' : 'none',
         opacity: typeof offset !== 'number' ? 0 : 1
       }}
