@@ -216,7 +216,7 @@ export const StorageContentMessageItem: FC<Props> = memo(({
           message={message}
           mediaLoadAvailable={visible}
           onViewMedia={onViewMedia}
-          single
+          single={columnCount > 1}
         />
       )}
 

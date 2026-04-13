@@ -11,8 +11,9 @@ import { useVirtualList } from '~/ui/hooks'
 import { StorageContentMessageItem } from './storage.content-message-item'
 import { StorageContentMessagesMediaViewer } from './storage.content-messages-media-viewer'
 
-/** Minimum scroll width per column for the message grid (gaps included in layout). */
-const GRID_MIN_CELL_PX = 268
+/** Minimum width per column so ~2 cards fit on typical phone widths (with list padding + gaps). */
+const GRID_MIN_CELL_PX = 200
+// const GRID_MIN_CELL_PX = 148
 
 const expandVisibleRangeToGridRows = (
   firstIndex: number,
@@ -81,6 +82,7 @@ export const StorageContentMessagesList: FC<Props> = memo(({
     const measure = () => {
       const w = el.clientWidth
       setColumnCount(Math.max(1, Math.floor((w - 24) / GRID_MIN_CELL_PX)))
+      // setColumnCount(Math.max(1, Math.floor((w - 40) / GRID_MIN_CELL_PX)))
     }
     measure()
     const ro = new ResizeObserver(measure)

@@ -64,6 +64,64 @@ export const ContentItemMediaItem: FC<Props> = memo(({
     onViewMedia?.(media.id)
   }, [media.id, onViewMedia])
 
+  const previewOpen = (isImage || isVideo || isAudio) ? handlePreviewClick : undefined
+
+  const rowPreview = (
+    <Fragment>
+      {blurPreviewUrl && (
+        <BluredImage
+          url={blurPreviewUrl}
+          width={64}
+          height={64}
+          radius={8}
+        />
+      )}
+      {hasPreviewFile && (
+        <FilePreviewImage
+          fileKey={previewFileKey}
+          timeout={50}
+          isPlay={isVideo}
+        />
+      )}
+      {!hasPreviewFile && (
+        <FilePreviewIcon
+          name={media.name}
+          isVideo={isVideo}
+          isAudio={isAudio}
+          isImage={isImage}
+        />
+      )}
+    </Fragment>
+  )
+
+  const cardPreview = (
+    <Fragment>
+      {blurPreviewUrl && (
+        <BluredImage
+          url={blurPreviewUrl}
+          width={280}
+          height={280}
+          radius={12}
+        />
+      )}
+      {hasPreviewFile && (
+        <FilePreviewImage
+          fileKey={previewFileKey}
+          timeout={50}
+          isPlay={isVideo}
+        />
+      )}
+      {!hasPreviewFile && (
+        <FilePreviewIcon
+          name={media.name}
+          isVideo={isVideo}
+          isAudio={isAudio}
+          isImage={isImage}
+        />
+      )}
+    </Fragment>
+  )
+
   return (
     <Fragment>
       <div
@@ -76,74 +134,114 @@ export const ContentItemMediaItem: FC<Props> = memo(({
         )}
         ref={elRef}
       >
-        <div
-          class={styles.preview}
-          onClick={(isImage || isVideo || isAudio) ? handlePreviewClick : undefined}
-        >
-          {blurPreviewUrl && (
-            <BluredImage
-              url={blurPreviewUrl}
-              width={64}
-              height={64}
-              radius={8}
-            />
-          )}
-          {hasPreviewFile && (
-            <FilePreviewImage
-              fileKey={previewFileKey}
-              timeout={50}
-              isPlay={isVideo}
-            />
-          )}
-          {!hasPreviewFile && (
-            <FilePreviewIcon
-              name={media.name}
-              isVideo={isVideo}
-              isAudio={isAudio}
-            />
-          )}
-        </div>
-
-        <div class={styles.description}>
-          <Text class={styles.title} grey small ellipsis>
-            {media.name}
-          </Text>
-          <div class={styles.footer}>
-            <Text grey ellipsis>
-              {formatSize(media.originalSize)}
-            </Text>
-            {typeof downloadingProgress === 'number' && (
-              <Text grey ellipsis>
-                {`${downloadingProgress}%`}
+        {single ? (
+          <Fragment>
+            <div class={styles.cardHeader}>
+              <div class={styles.cardHeaderIcon}>
+                <FilePreviewIcon
+                  name={media.name}
+                  isVideo={isVideo}
+                  isAudio={isAudio}
+                  isImage={isImage}
+                />
+              </div>
+              <Text class={styles.cardTitle} ellipsis>
+                {media.name}
               </Text>
+              {(loading || (downloading && typeof downloadingProgress !== 'number')) && (
+                <Loader class={styles.cardHeaderLoader} grey/>
+              )}
+              {typeof downloadingProgress === 'number' && (
+                <Button
+                  class={styles.cardCancelButton}
+                  inline
+                  onClick={onCancelDownload}
+                >
+                  <Icon icon="cross"/>
+                </Button>
+              )}
+              {(!loading && !downloading && menu) && (
+                <Menu
+                  {...menu}
+                  class={styles.cardMenu}
+                  parentRef={elRef}
+                />
+              )}
+            </div>
+
+            <div
+              class={styles.cardPreview}
+              onClick={previewOpen}
+            >
+              <div class={styles.cardPreviewInner}>
+                {cardPreview}
+              </div>
+            </div>
+
+            {(typeof downloadingProgress === 'number' || (!downloading && !loading)) && (
+              <div class={styles.cardFooter}>
+                <Text class={styles.cardFooterText} grey ellipsis small>
+                  {formatSize(media.originalSize)}
+                </Text>
+                {typeof downloadingProgress === 'number' && (
+                  <Text class={styles.cardFooterText} grey ellipsis small>
+                    {`${downloadingProgress}%`}
+                  </Text>
+                )}
+              </div>
             )}
-          </div>
-        </div>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <div
+              class={styles.preview}
+              onClick={previewOpen}
+            >
+              {rowPreview}
+            </div>
 
-        {(loading || (downloading && typeof downloadingProgress !== 'number')) && (
-          <Loader class={styles.loader} grey/>
-        )}
+            <div class={styles.description}>
+              <Text class={styles.title} grey small ellipsis>
+                {media.name}
+              </Text>
+              <div class={styles.footer}>
+                <Text grey ellipsis>
+                  {formatSize(media.originalSize)}
+                </Text>
+                {typeof downloadingProgress === 'number' && (
+                  <Text grey ellipsis>
+                    {`${downloadingProgress}%`}
+                  </Text>
+                )}
+              </div>
+            </div>
 
-        {typeof downloadingProgress === 'number' && (
-          <Button
-            class={styles.cancelButton}
-            inline
-            onClick={onCancelDownload}
-          >
-            <Icon icon="cross"/>
-          </Button>
-        )}
+            {(loading || (downloading && typeof downloadingProgress !== 'number')) && (
+              <Loader class={styles.loader} grey/>
+            )}
 
-        {(!loading && !downloading && menu) && (
-          <Menu
-            {...menu}
-            class={styles.menu}
-            parentRef={elRef}
-          />
+            {typeof downloadingProgress === 'number' && (
+              <Button
+                class={styles.cancelButton}
+                inline
+                onClick={onCancelDownload}
+              >
+                <Icon icon="cross"/>
+              </Button>
+            )}
+
+            {(!loading && !downloading && menu) && (
+              <Menu
+                {...menu}
+                class={styles.menu}
+                parentRef={elRef}
+              />
+            )}
+          </Fragment>
         )}
       </div>
 
-      {single && (
+      {!single && (
         <Break size={16} px/>
       )}
     </Fragment>

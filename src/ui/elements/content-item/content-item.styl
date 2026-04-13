@@ -12,7 +12,7 @@
 
   &._grid
     max-width: none
-    padding: 20px 0
+    padding: 10px 0
     transition: top 0.1s ease-out, left 0.1s ease-out, opacity 0.4s ease-out
     will-change: top, left
 
@@ -29,6 +29,13 @@
   border-radius: 8px
   background-color: var(--content-item-background-color)
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02)
+
+.root._grid .content
+  padding: 0
+  border-radius: 12px
+  overflow: hidden
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12)
+  background-color: var(--content-item-card-background-color, var(--content-item-background-color))
 
 .loader
   position: absolute

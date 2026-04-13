@@ -11,12 +11,14 @@ type Props = {
   name?: string
   isAudio?: boolean
   isVideo?: boolean
+  isImage?: boolean
 }
 
 export const FilePreviewIcon: FC<Props> = memo(({
   name,
   isAudio,
-  isVideo
+  isVideo,
+  isImage
 }) => {
   const extention = useMemo(() => {
     return name?.split('.').pop() || ''
@@ -25,11 +27,12 @@ export const FilePreviewIcon: FC<Props> = memo(({
   const colorStyle = useMemo(() => {
     if (isAudio) return styles._lightBlue
     if (isVideo) return styles._black
+    if (isImage) return styles._image
     if (extention === 'pdf') return styles._red
     if (['epub', 'fb2', 'mobi', 'txt'].includes(extention)) return styles._grey
     if (['doc', 'docx', 'odt', 'rtf'].includes(extention)) return styles._blue
     if (extention === 'csv' || extention.startsWith('xl')) return styles._green
-  }, [extention, isAudio, isVideo])
+  }, [extention, isAudio, isVideo, isImage])
 
   return (
     <div class={cn(
