@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'preact/hooks'
+import { useCallback, useMemo, useRef, useState } from 'preact/hooks'
 
 import { useStateRef, useCallbackRef } from '~/tools/hooks'
 import { useResizeObserver, useIntersectionObserver } from '~/ui/hooks'
@@ -11,6 +11,9 @@ const initialVisibility = {
   lastIndex: PREVISIBILE_COUNT,
 }
 
+const sortHeightsByIdDesc = (heights: Map<number, number>) =>
+  [...heights].sort((a, b) => b[0] - a[0])
+
 export const useVirtualList = () => {
   const [offsets, _setOffsets, offsetsRef, setOffsetsRef] = useStateRef<Map<number, number>>(new Map())
   const [visibility, _setVisibility, visibilityRef, setVisibilityRef] = useStateRef(initialVisibility)
@@ -18,15 +21,47 @@ export const useVirtualList = () => {
   const heightsRef = useRef<Map<number, number>>(new Map())
   const intersectingsRef = useRef<Map<number, boolean>>(new Map())
   const countRef = useRef(PREVISIBILE_COUNT)
+  const columnCountRef = useRef(1)
+  const [columnCount, setColumnCountState] = useState(1)
 
   const [_calcOffsets, calcOffsetsRef] = useCallbackRef(() => {
-    let heightsSum = 0
+    const ordered = sortHeightsByIdDesc(heightsRef.current)
+    const n = ordered.length
+    const cols = Math.max(1, columnCountRef.current)
 
-    return new Map([...heightsRef.current].map(([id, height], index) => {
-      const offset = heightsSum + (index + 1) * PADDING - PADDING
-      heightsSum += height
-      return [id, offset]
-    }))
+    if (cols <= 1) {
+      let heightsSum = 0
+      return new Map(ordered.map(([id, height], index) => {
+        const offset = heightsSum + (index + 1) * PADDING - PADDING
+        heightsSum += height
+        return [id, offset]
+      }))
+    }
+
+    const rowCount = Math.ceil(n / cols)
+    const rowHeights = new Array(rowCount).fill(0)
+    for (let i = 0; i < n; i++) {
+      const row = Math.floor(i / cols)
+      const h = ordered[i][1]
+      if (h > rowHeights[row]) {
+        rowHeights[row] = h
+      }
+    }
+
+    let y = 0
+    const idToTop = new Map<number, number>()
+    for (let r = 0; r < rowCount; r++) {
+      for (let c = 0; c < cols; c++) {
+        const i = r * cols + c
+        if (i >= n) break
+        idToTop.set(ordered[i][0], y)
+      }
+      y += rowHeights[r]
+      if (r < rowCount - 1) {
+        y += PADDING
+      }
+    }
+    return idToTop
   }, [heightsRef])
 
   const [_resetOffsets, resetOffsetsRef] = useCallbackRef(() => {
@@ -123,6 +158,14 @@ export const useVirtualList = () => {
   const { resizeObserver } = useResizeObserver(handleResizeObserverRef)
   const { intersectionRef, intersectionObserver } = useIntersectionObserver(handleIntersectionObserverRef)
 
+  const setColumnCount = useCallback((next: number) => {
+    const c = Math.max(1, Math.floor(next))
+    if (columnCountRef.current === c) return
+    columnCountRef.current = c
+    setColumnCountState(c)
+    resetOffsetsRef.current()
+  }, [resetOffsetsRef])
+
   return useMemo(() => ({
     offsets,
     visibility,
@@ -131,6 +174,8 @@ export const useVirtualList = () => {
     intersectionObserver,
     countRef,
     intersectionRef,
-    onDeleteMessage
-  }), [offsets, visibility, finished, resizeObserver, intersectionObserver, intersectionRef, onDeleteMessage])
+    onDeleteMessage,
+    setColumnCount,
+    columnCount
+  }), [offsets, visibility, finished, resizeObserver, intersectionObserver, intersectionRef, onDeleteMessage, setColumnCount, columnCount])
 }

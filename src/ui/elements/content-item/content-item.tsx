@@ -14,7 +14,6 @@ import styles from './content-item.styl'
 
 type Props = {
   message: Message
-  offset: number | undefined
   visible: boolean
   last: boolean
   resizeObserver?: ResizeObserver
@@ -28,7 +27,6 @@ type Props = {
 export const ContentItem: FC<Props> = memo(({
   children,
   message,
-  offset,
   visible,
   last,
   resizeObserver,
@@ -78,12 +76,11 @@ export const ContentItem: FC<Props> = memo(({
       id={`${message.id}`}
       class={cn(
         styles.root,
-        typeof offset !== 'number' && styles._transparent
+        !visible && styles._transparent
       )}
       style={{
-        top: `${offset}px`,
         display: visible ? 'block' : 'none',
-        opacity: typeof offset !== 'number' ? 0 : 1
+        opacity: visible ? 1 : 0
       }}
       ref={elRef}
     >

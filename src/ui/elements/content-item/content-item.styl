@@ -1,22 +1,21 @@
 .root
-  position: absolute
+  position: relative
   flex-shrink: 0
-  width: $content-width
-  max-width: calc(100% - 32px)
-  padding: 20px 0
-  transition: top 0.1s ease-out, opacity 0.4s ease-out
-  will-change: top
+  width: 100%
+  max-width: none
+  padding: 0
+  transition: opacity 0.2s ease-out
 
   &._transparent
-    will-change: top, opacity
+    will-change: opacity
 
   @media screen and (min-width: $sidebar-width + $content-width + 40px)
-    max-width: calc(100% - 40px)
+    max-width: none
 
 .content
   position: relative
   width: 100%
-  padding: 16px 16px 0
+  padding: 0
   border-radius: 8px
   background-color: var(--content-item-background-color)
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02)

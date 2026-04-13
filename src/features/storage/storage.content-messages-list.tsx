@@ -35,14 +35,13 @@ export const StorageContentMessagesList: FC<Props> = memo(({
   onMoveMessage
 }) => {
   const {
-    offsets,
     resizeObserver,
     visibility,
     finished,
     intersectionObserver,
     countRef,
     intersectionRef,
-    onDeleteMessage
+    onDeleteMessage,
   } = useVirtualList()
   const lastMessageIdRef = useUpdatableRef(lastMessageId)
   const messagesLoadingRef = useUpdatableRef(messagesLoading)
@@ -67,7 +66,7 @@ export const StorageContentMessagesList: FC<Props> = memo(({
     const checkIsLoadAvailable = () => (
       !messagesLoadingRef.current &&
       typeof lastMessageIdRef.current !== 'undefined' &&
-      visibility.lastIndex === messages.length - 1
+      visibility.lastIndex >= messages.length - 1
     )
     if (checkIsLoadAvailable()) {
       loadMessages()
@@ -90,19 +89,16 @@ export const StorageContentMessagesList: FC<Props> = memo(({
       >
         {messages.map((message, index) => {
           const last = index === messages.length - 1
-          const offset = offsets.get(message.id)
-          const visible = (
-            (index >= visibility.firstIndex && index <= visibility.lastIndex) ||
-            index === offsets.size - 1
-          )
-
+          // const visible = (
+          //   (index >= visibility.firstIndex && index <= visibility.lastIndex) ||
+          //   index === messages.length - 1
+          // )
           return (
             <StorageContentMessageItem
               key={`${message.id}-${message.parentId}`}
               folder={folder}
               message={message}
-              offset={offset}
-              visible={visible}
+              visible
               last={last}
               resizeObserver={resizeObserver}
               intersectionObserver={intersectionObserver}

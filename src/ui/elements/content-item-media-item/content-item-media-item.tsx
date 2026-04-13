@@ -5,7 +5,6 @@ import { useMemo, useRef, useCallback } from 'preact/hooks'
 import cn from 'classnames'
 
 import type { MessageMedia } from '~/core/store'
-import { formatSize } from '~/tools/format-size'
 import { Menu } from '~/ui/elements/menu'
 import type { Props as MenuProps } from '~/ui/elements/menu'
 import { Text } from '~/ui/elements/text'
@@ -14,7 +13,6 @@ import { FilePreviewImage } from '~/ui/elements/file-preview-image'
 import { FilePreviewIcon } from '~/ui/elements/file-preview-icon'
 import { Loader } from '~/ui/elements/loader'
 import { Button } from '~/ui/elements/button'
-import { Break } from '~/ui/elements/break'
 import { Icon } from '~/ui/elements/icon'
 
 import styles from './content-item-media-item.styl'
@@ -76,6 +74,12 @@ export const ContentItemMediaItem: FC<Props> = memo(({
         )}
         ref={elRef}
       >
+        <div class={styles.description}>
+          <Text class={styles.title} grey small ellipsis>
+            {media.name}
+          </Text>
+        </div>
+
         <div
           class={styles.preview}
           onClick={(isImage || isVideo || isAudio) ? handlePreviewClick : undefined}
@@ -104,22 +108,6 @@ export const ContentItemMediaItem: FC<Props> = memo(({
           )}
         </div>
 
-        <div class={styles.description}>
-          <Text class={styles.title} grey small ellipsis>
-            {media.name}
-          </Text>
-          <div class={styles.footer}>
-            <Text grey ellipsis>
-              {formatSize(media.originalSize)}
-            </Text>
-            {typeof downloadingProgress === 'number' && (
-              <Text grey ellipsis>
-                {`${downloadingProgress}%`}
-              </Text>
-            )}
-          </div>
-        </div>
-
         {(loading || (downloading && typeof downloadingProgress !== 'number')) && (
           <Loader class={styles.loader} grey/>
         )}
@@ -142,10 +130,6 @@ export const ContentItemMediaItem: FC<Props> = memo(({
           />
         )}
       </div>
-
-      {single && (
-        <Break size={16} px/>
-      )}
     </Fragment>
   )
 })

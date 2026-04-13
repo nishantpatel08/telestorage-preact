@@ -22,7 +22,6 @@ import { StorageContentMessageMediaItem } from './storage.content-message-media-
 type Props = {
   folder: Folder
   message: Message
-  offset: number | undefined
   visible: boolean
   last: boolean
   resizeObserver?: ResizeObserver
@@ -36,7 +35,6 @@ type Props = {
 export const StorageContentMessageItem: FC<Props> = memo(({
   folder,
   message,
-  offset,
   visible,
   last,
   resizeObserver,
@@ -165,7 +163,6 @@ export const StorageContentMessageItem: FC<Props> = memo(({
   return (
     <ContentItem
       message={message}
-      offset={offset}
       visible={visible}
       last={last}
       resizeObserver={resizeObserver}
