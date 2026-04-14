@@ -60,6 +60,11 @@ export const FilePlayer: FC<Props> = memo(({
   const [url, setUrl] = useState('')
   const [hidden, setHidden] = useState(false)
   const [streamLoading, setStreamLoading] = useState(true)
+  const [parsedDuration, setParsedDuration] = useState(0)
+  const safeDuration = (duration && Number.isFinite(duration) && duration > 1) ?
+    Math.round(duration) :
+    0
+  const effectiveDuration = safeDuration || parsedDuration
 
   const [syncProgress, _syncProgressRef, cancelSyncProgressRef] = useRAFCallback(() => {
     if (!playerRef?.current) return
@@ -90,15 +95,19 @@ export const FilePlayer: FC<Props> = memo(({
     }
   }, [playRef])
 
-  const changeProgress = useCallback((value, type) => {
+  const changeProgress = useCallback((value) => {
     cancelSyncProgressRef.current?.()
-    setProgress(value)
+    const nextValue = effectiveDuration ? Math.min(Math.max(0, value), effectiveDuration) : Math.max(0, value)
+    setProgress(nextValue)
     self.clearTimeout(progressChangeTimeoutRef.current)
     progressChangeTimeoutRef.current = self.setTimeout(() => {
-      if (!playerRef.current || type !== 'pointerup') return
-      playerRef.current.currentTime = value
+      if (!playerRef.current) return
+      playerRef.current.currentTime = nextValue
+      if (!playerRef.current.paused && !playerRef.current.ended) {
+        syncProgress()
+      }
     }, 100)
-  }, [cancelSyncProgressRef, setProgress])
+  }, [cancelSyncProgressRef, setProgress, effectiveDuration, syncProgress])
 
   const [hideControlsAfterTimeout, hideControlsAfterTimeoutRef] = useCallbackRef(() => {
     self.clearTimeout(controlsHideTimeoutRef.current)
@@ -150,6 +159,12 @@ export const FilePlayer: FC<Props> = memo(({
     }
   }, [playRef, streamLoading, playing])
 
+  const updateParsedDuration = useCallback(() => {
+    const nextDuration = playerRef.current?.duration
+    if (!nextDuration || !Number.isFinite(nextDuration)) return
+    setParsedDuration(Math.max(1, Math.round(nextDuration)))
+  }, [])
+
   const handleWaiting = useCallback(() => {
     setStreamLoading(true)
   }, [setStreamLoading])
@@ -175,11 +190,11 @@ export const FilePlayer: FC<Props> = memo(({
 
   const seekForward = useCallback((ev: Event) => {
     ev.stopPropagation()
-    if (!playerRef.current || !duration) return
-    const newTime = Math.min(duration, playerRef.current.currentTime + 10)
+    if (!playerRef.current || !effectiveDuration) return
+    const newTime = Math.min(effectiveDuration, playerRef.current.currentTime + 10)
     playerRef.current.currentTime = newTime
     setProgress(newTime)
-  }, [playerRef, duration, setProgress])
+  }, [playerRef, effectiveDuration, setProgress])
 
   useEffect(() => {
     if (!fileStreamUrl) return
@@ -288,6 +303,8 @@ export const FilePlayer: FC<Props> = memo(({
           onPlaying={handlePlayStart}
           onWaiting={handleWaiting}
           onCanPlayThrough={handleCanPlay}
+          onLoadedMetadata={updateParsedDuration}
+          onDurationChange={updateParsedDuration}
         />
       ) : isAudio ? (
         <audio
@@ -307,6 +324,8 @@ export const FilePlayer: FC<Props> = memo(({
           onWaiting={handleWaiting}
           onCanPlay={isSafari ? undefined : handleCanPlay}
           onCanPlayThrough={isSafari ? handleCanPlay : undefined}
+          onLoadedMetadata={updateParsedDuration}
+          onDurationChange={updateParsedDuration}
         />
       ) : null}
 
@@ -394,7 +413,7 @@ export const FilePlayer: FC<Props> = memo(({
           class={styles.progress}
           value={progress}
           min={0}
-          max={duration || 0}
+          max={effectiveDuration || 0}
           step={0.001}
           onChange={changeProgress}
         />
@@ -402,7 +421,7 @@ export const FilePlayer: FC<Props> = memo(({
         <div class={styles.time}>
           {progress ? formatDuration(progress) : '00:00'}
           {' / '}
-          {duration ? formatDuration(duration) : '00:00'}
+          {effectiveDuration ? formatDuration(effectiveDuration) : '00:00'}
         </div>
       </div>
     </Fragment>

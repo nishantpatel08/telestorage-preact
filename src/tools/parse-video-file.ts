@@ -43,8 +43,16 @@ export const parseVideoFile = (
   }
 
   video.onloadedmetadata = async () => {
+    if (!checkIsValidDuration(video.duration)) {
+      clear()
+      if (isSliced) {
+        return resolve(parseVideoFile(fileKey))
+      }
+      return resolve(undefined)
+    }
+
     const videoParams = {
-      duration: video.duration,
+      duration: Math.max(1, Math.round(video.duration)),
       w: video.videoWidth,
       h: video.videoHeight
     }
@@ -124,5 +132,10 @@ export const parseVideoFile = (
   }
 
   video.volume = 0
+  video.preload = 'metadata'
   video.src = fileUrl
+  video.load()
 })
+
+const checkIsValidDuration = (duration: number) =>
+  Number.isFinite(duration) && duration > 0
