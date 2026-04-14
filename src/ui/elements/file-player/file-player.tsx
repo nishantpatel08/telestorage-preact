@@ -55,11 +55,12 @@ export const FilePlayer: FC<Props> = memo(({
   const progressChangeTimeoutRef = useRef(0)
   const [controlsHidden, setControlsHidden] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [playing, setPlaying] = useState(true)
+  const [playing, setPlaying] = useState(!isVideo)
   const [thumbUrl, setThumbUrl] = useState('')
   const [url, setUrl] = useState('')
   const [hidden, setHidden] = useState(false)
   const [streamLoading, setStreamLoading] = useState(true)
+  const [videoStarted, setVideoStarted] = useState(false)
   const [parsedDuration, setParsedDuration] = useState(0)
   const safeDuration = (duration && Number.isFinite(duration) && duration > 1) ?
     Math.round(duration) :
@@ -128,27 +129,36 @@ export const FilePlayer: FC<Props> = memo(({
     ev.stopPropagation()
     syncProgress()
     setPlaying(true)
+    if (isVideo) {
+      setVideoStarted(true)
+    }
     if (isFullscreen) {
       hideControlsAfterTimeout()
     }
     if (streamLoading) {
       setStreamLoading(false)
     }
-  }, [isFullscreen, streamLoading, syncProgress, setPlaying, hideControlsAfterTimeout])
+  }, [isFullscreen, isVideo, streamLoading, syncProgress, setPlaying, hideControlsAfterTimeout])
 
   const [handleContentClick, handleContentClickRef] = useCallbackRef((ev) => {
     if (!url) {
       return
     } else if (isFullscreen) {
+      if (isVideo && !playing && ev.type === 'click') {
+        return
+      }
       if (ev.type === 'click') {
         togglePlay()
       } else if (playing) {
         toggleControls()
       }
     } else {
+      if (isVideo && !playing) {
+        return
+      }
       togglePlay()
     }
-  }, [isFullscreen, url, playing, togglePlay, toggleControls])
+  }, [isFullscreen, isVideo, url, playing, togglePlay, toggleControls])
 
   const handleCanPlay = useCallback(() => {
     if (playing) {
@@ -166,8 +176,10 @@ export const FilePlayer: FC<Props> = memo(({
   }, [])
 
   const handleWaiting = useCallback(() => {
-    setStreamLoading(true)
-  }, [setStreamLoading])
+    if (playing) {
+      setStreamLoading(true)
+    }
+  }, [playing, setStreamLoading])
 
   const prevent = useCallback(ev => {
     ev.stopPropagation()
@@ -199,8 +211,11 @@ export const FilePlayer: FC<Props> = memo(({
   useEffect(() => {
     if (!fileStreamUrl) return
     setUrl(fileStreamUrl)
-    setStreamLoading(true)
-  }, [fileStreamUrl])
+    setPlaying(!isVideo)
+    setVideoStarted(false)
+    setProgress(0)
+    setStreamLoading(!isVideo)
+  }, [fileStreamUrl, isVideo])
 
   useEffect(() => {
     if (!fileKey) return
@@ -209,16 +224,20 @@ export const FilePlayer: FC<Props> = memo(({
     if (!url) return
 
     setUrl(url)
+    setPlaying(!isVideo)
+    setVideoStarted(false)
+    setProgress(0)
+    setStreamLoading(!isVideo)
 
     return () => URL.revokeObjectURL(url)
-  }, [fileKey])
+  }, [fileKey, isVideo])
 
   useEffect(() => {
     if (!url || !isActive) return
-    if (fileKey) {
+    if (fileKey && !isVideo) {
       playerRef.current?.play?.().catch(ignore)
     }
-  }, [isActive, fileKey, url])
+  }, [isActive, fileKey, isVideo, url])
 
   useEffect(() => {
     if (playing) return
@@ -259,6 +278,14 @@ export const FilePlayer: FC<Props> = memo(({
   }, [isActive, playing])
 
   useEffect(() => {
+    if (!url || !isVideo) return
+    playerRef.current?.pause?.()
+    if (playerRef.current) {
+      playerRef.current.currentTime = 0
+    }
+  }, [url, isVideo])
+
+  useEffect(() => {
     const parentEl = parentRef.current
     const handleContentClick = (ev) => handleContentClickRef.current(ev)
     parentEl?.addEventListener('click', handleContentClick)
@@ -266,6 +293,55 @@ export const FilePlayer: FC<Props> = memo(({
       parentEl?.removeEventListener('click', handleContentClick)
     }
   }, [parentRef])
+
+  useEffect(() => {
+    const handleKeyDown = (ev: KeyboardEvent) => {
+      if (ev.repeat || !isActive) return
+
+      const isSpace = ev.code === 'Space' || ev.key === ' '
+      const isArrowLeft = ev.key === 'ArrowLeft'
+      const isArrowRight = ev.key === 'ArrowRight'
+      const shouldSeekWithArrows = Boolean(isVideo && videoStarted && playerRef.current)
+      const target = ev.target as HTMLElement | null
+      if (target) {
+        const tagName = target.tagName.toLowerCase()
+        if (target.isContentEditable || ['input', 'textarea', 'select'].includes(tagName)) {
+          return
+        }
+        if (tagName === 'button' && !isSpace && !(shouldSeekWithArrows && (isArrowLeft || isArrowRight))) {
+          return
+        }
+      }
+
+      if (isSpace) {
+        ev.preventDefault()
+        ev.stopPropagation()
+        if (isVideo && url) {
+          togglePlayRef.current()
+        }
+        return
+      }
+
+      if (!shouldSeekWithArrows) return
+
+      if (isArrowLeft) {
+        ev.preventDefault()
+        seekBackward(ev)
+        return
+      }
+
+      if (isArrowRight) {
+        ev.preventDefault()
+        seekForward(ev)
+        return
+      }
+    }
+
+    self.addEventListener('keydown', handleKeyDown, true)
+    return () => {
+      self.removeEventListener('keydown', handleKeyDown, true)
+    }
+  }, [isActive, url, isVideo, videoStarted, effectiveDuration, setProgress])
 
   useEffect(() => {
     const cancelSyncProgress = cancelSyncProgressRef.current
@@ -297,7 +373,7 @@ export const FilePlayer: FC<Props> = memo(({
           preload="auto"
           poster={thumbUrl}
           controls={false}
-          autoPlay={isSafari}
+          autoPlay={false}
           playsInline
           onPlay={handlePlayStart}
           onPlaying={handlePlayStart}
@@ -353,6 +429,15 @@ export const FilePlayer: FC<Props> = memo(({
             isAudio && styles._border
           )}
           icon={playing ? 'pause' : 'play'}
+          square
+          onClick={togglePlay}
+        />
+      )}
+
+      {!!url && isVideo && !playing && !streamLoading && (
+        <Button
+          class={cn(styles.playButton, styles.previewPlayButton)}
+          icon="play"
           square
           onClick={togglePlay}
         />
