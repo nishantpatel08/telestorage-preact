@@ -29,6 +29,7 @@ type Props = {
   y: number
   scale: number
   mediaElRef?: RefObject<HTMLImageElement>
+  fullscreenElRef?: RefObject<HTMLDivElement>
   transition: boolean
   displaySize: DisplaySize
   isActive?: boolean
@@ -51,6 +52,7 @@ export const MediaViewerItem: FC<Props> = memo(({
   y,
   scale,
   mediaElRef,
+  fullscreenElRef,
   transition,
   displaySize,
   isActive,
@@ -84,6 +86,7 @@ export const MediaViewerItem: FC<Props> = memo(({
           description={description}
           type={type}
           parentRef={elRef}
+          fullscreenElRef={fullscreenElRef}
           isActive={isActive}
           isFullscreen={isFullscreen}
           isFakeFullscreen={isFakeFullscreen}

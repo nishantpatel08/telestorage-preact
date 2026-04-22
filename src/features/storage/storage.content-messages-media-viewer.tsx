@@ -23,6 +23,7 @@ export const StorageContentMessagesMediaViewer: FC<Props> = memo(({
   onClose
 }) => {
   const mediaElRef = useRef<HTMLImageElement|null>(null)
+  const viewerElRef = useRef<HTMLDivElement|null>(null)
   const displaySize = useDispaySize()
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [isFakeFullscreen, setIsFakeFullscreen] = useState(false)
@@ -38,6 +39,10 @@ export const StorageContentMessagesMediaViewer: FC<Props> = memo(({
   }, [mediaMessages.length])
 
   const [activeIndex, _setActiveIndex, _activeIndexRef, setActiveIndexRef] = useStateRef(initialIndex)
+
+  const isActiveVideo = useMemo(() => (
+    mediaMessages[activeIndex]?.media?.type?.startsWith('video') ?? false
+  ), [mediaMessages, activeIndex])
 
   const [_showNext, showNextRef] = useCallbackRef(() => {
     setActiveIndexRef.current?.(activeIndex => Math.min(mediaMessagesCountRef.current - 1, activeIndex + 1))
@@ -66,7 +71,9 @@ export const StorageContentMessagesMediaViewer: FC<Props> = memo(({
       isLast={activeIndex === mediaMessages.length - 1}
       isFullscreen={isFullscreen}
       isFakeFullscreen={isFakeFullscreen}
+      hideFullscreenButton={isActiveVideo}
       mediaElRef={mediaElRef}
+      viewerElRef={viewerElRef}
       transformRef={transformRef}
       setTransformRef={setTransformRef}
       setTransitionRef={setTransitionRef}
@@ -88,6 +95,7 @@ export const StorageContentMessagesMediaViewer: FC<Props> = memo(({
             y={k === 0 ? y : 0}
             scale={k === 0 ? scale : 1}
             mediaElRef={k === 0 ? mediaElRef : undefined}
+            fullscreenElRef={viewerElRef}
             transition={k === 0 ? transition : (transition && scale === 1)}
             displaySize={displaySize}
             isActive={k === 0}

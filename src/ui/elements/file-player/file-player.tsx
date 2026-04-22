@@ -27,6 +27,7 @@ type Props = {
   }
   type: string
   parentRef: RefObject<HTMLDivElement>
+  fullscreenElRef?: RefObject<HTMLDivElement>
   isActive?: boolean
   isFullscreen?: boolean
   isFakeFullscreen?: boolean
@@ -42,6 +43,7 @@ export const FilePlayer: FC<Props> = memo(({
   duration,
   description,
   parentRef,
+  fullscreenElRef,
   isActive,
   isFullscreen,
   isFakeFullscreen,
@@ -191,7 +193,6 @@ export const FilePlayer: FC<Props> = memo(({
     }
   }, [isFullscreen, controlsHidden, hideControlsAfterTimeout])
 
-  // New seek functions
   const seekBackward = useCallback((ev: Event) => {
     ev.stopPropagation()
     if (!playerRef.current) return
@@ -207,6 +208,25 @@ export const FilePlayer: FC<Props> = memo(({
     playerRef.current.currentTime = newTime
     setProgress(newTime)
   }, [playerRef, effectiveDuration, setProgress])
+  
+  const toggleFullscreen = useCallback((ev: Event) => {
+    ev.stopPropagation()
+    const el = fullscreenElRef?.current as any
+    if (!el) return
+    const doc = self.document as any
+
+    if (isFullscreen) {
+      const exit = doc.exitFullscreen || doc.webkitExitFullscreen ||
+        doc.webkitExitFullScreen || doc.webkitCancelFullscreen ||
+        doc.webkitCancelFullScreen
+      exit?.call(doc)
+    } else {
+      const request = el.requestFullscreen || el.webkitEnterFullscreen ||
+        el.webkitEnterFullScreen || el.webkitRequestFullscreen ||
+        el.webkitRequestFullScreen
+      request?.call(el)
+    }
+  }, [isFullscreen, ])
 
   useEffect(() => {
     if (!fileStreamUrl) return
@@ -358,157 +378,213 @@ export const FilePlayer: FC<Props> = memo(({
     playerRef.current.src = ''
     playerRef.current.load?.()
   }, [])
-
+  
   return (
     <Fragment>
-      {isVideo ? (
-        <video
-          ref={playerRef}
-          class={cn(
-            outerStyles,
-            styles.video,
-            hidden && styles._hidden
-          )}
-          src={isActive ? (url || undefined) : undefined}
-          preload="auto"
-          poster={thumbUrl}
-          controls={false}
-          autoPlay={false}
-          playsInline
-          onPlay={handlePlayStart}
-          onPlaying={handlePlayStart}
-          onWaiting={handleWaiting}
-          onCanPlayThrough={handleCanPlay}
-          onLoadedMetadata={updateParsedDuration}
-          onDurationChange={updateParsedDuration}
-        />
-      ) : isAudio ? (
-        <audio
-          ref={playerRef}
-          class={cn(
-            outerStyles,
-            styles.audio,
-            hidden && styles._hidden
-          )}
-          src={isActive ? (url || undefined) : undefined}
-          preload="auto"
-          controls={false}
-          autoPlay={isSafari}
-          playsInline
-          onPlay={handlePlayStart}
-          onPlaying={handlePlayStart}
-          onWaiting={handleWaiting}
-          onCanPlay={isSafari ? undefined : handleCanPlay}
-          onCanPlayThrough={isSafari ? handleCanPlay : undefined}
-          onLoadedMetadata={updateParsedDuration}
-          onDurationChange={updateParsedDuration}
-        />
-      ) : null}
-
-      {isAudio && (
+      {isVideo && (
         <div
           class={cn(
-            styles.description,
-            (!url || streamLoading || (isFullscreen && !controlsHidden)) && styles._transparent
+            outerStyles,
+            styles.videoWrapper,
+            hidden && styles._hidden
           )}
-          onClick={handleContentClick}
         >
-          {[description?.performer, description?.title].map(text => (
-            <div class={styles.descriptionText} key={text}>
-              {text}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {!!url && !streamLoading && isFullscreen && (
-        <Button
-          class={cn(
-            styles.playButton,
-            controlsHidden && styles._hidden,
-            isAudio && styles._border
-          )}
-          icon={playing ? 'pause' : 'play'}
-          square
-          onClick={togglePlay}
-        />
-      )}
-
-      {!!url && isVideo && !playing && !streamLoading && (
-        <Button
-          class={cn(styles.playButton, styles.previewPlayButton)}
-          icon="play"
-          square
-          onClick={togglePlay}
-        />
-      )}
-
-      {streamLoading && (
-        <Loader
-          class={styles.loader}
-          white={isVideo || isFullscreen}
-          big
-        />
-      )}
-
-      <div
-        class={cn(
-          styles.controls,
-          (!url || (isSafari && streamLoading)) && styles._disabled,
-          controlsHidden && styles._hidden,
-          isFullscreen && styles._fullscreen
-        )}
-        onClick={prevent}
-        onMouseMove={prevent}
-        onTouchMove={prevent}
-      >
-        
-        <Fragment>
-          <Button
-            square
-            onClick={seekBackward}
-          >
-            <svg width="800px" height="800px" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="stroke-width:3; stroke:#ffffff; fill:none;">
-              <polyline points="9.57 15.41 12.17 24.05 20.81 21.44" style="stroke-linecap:round;"/>
-              <path d="M26.93,41.41V23a.09.09,0,0,0-.16-.07s-2.58,3.69-4.17,4.78" style="stroke-linecap:round;"/>
-              <rect x="32.19" y="22.52" width="11.41" height="18.89" rx="5.7"/>
-              <path d="M12.14,23.94a21.91,21.91,0,1,1-.91,13.25" style="stroke-linecap:round;"/>
-            </svg>
-
-          </Button>
-          <Button
-            icon={playing ? 'pause' : 'play'}
-            square
-            onClick={togglePlay}
+          <video
+            ref={playerRef}
+            class={styles.video}
+            src={isActive ? (url || undefined) : undefined}
+            preload="auto"
+            poster={thumbUrl}
+            controls={false}
+            autoPlay={false}
+            playsInline
+            onPlay={handlePlayStart}
+            onPlaying={handlePlayStart}
+            onWaiting={handleWaiting}
+            onCanPlayThrough={handleCanPlay}
+            onLoadedMetadata={updateParsedDuration}
+            onDurationChange={updateParsedDuration}
           />
-          <Button
-            square
-            onClick={seekForward}
+
+          {!!url && !playing && !streamLoading && (
+            <Button
+              class={cn(styles.playButton, styles.previewPlayButton)}
+              icon="play"
+              square
+              onClick={togglePlay}
+            />
+          )}
+
+          {streamLoading && (
+            <Loader
+              class={styles.loader}
+              white
+              big
+            />
+          )}
+
+          <div
+            class={cn(
+              styles.controls,
+              styles._video,
+              (!url || (isSafari && streamLoading)) && styles._disabled,
+              controlsHidden && styles._hidden
+            )}
+            onClick={prevent}
+            onMouseMove={prevent}
+            onTouchMove={prevent}
           >
-            <svg width="800px" height="800px" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="stroke-width:3; stroke:#ffffff; fill:none;">
-              <polyline points="54.43 15.41 51.83 24.05 43.19 21.44" style="stroke-linecap:round;"/>
-              <path d="M24.00,41.41V23a.09.09,0,0,0-.16-.07s-2.58,3.69-4.17,4.78" style="stroke-linecap:round;"/>
-              <rect x="30.00" y="22.52" width="11.41" height="18.89" rx="5.7"/>
-              <path d="M51.86,23.94a21.91,21.91,0,1,0,.91,13.25" style="stroke-linecap:round;"/>
-            </svg>
-          </Button>
-        </Fragment>
+            <Range
+              class={styles.progress}
+              value={progress}
+              min={0}
+              max={effectiveDuration || 0}
+              step={0.001}
+              onChange={changeProgress}
+            />
+            <div class={styles.controlsRow}>
+              <div class={styles.controlsLeft}>
+                <Button
+                  class={styles.controlButton}
+                  icon={playing ? 'pause' : 'play'}
+                  square
+                  onClick={togglePlay}
+                />
+                <Button
+                  class={styles.controlButton}
+                  square
+                  onClick={seekBackward}
+                >
+                  <svg width="800px" height="800px" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="stroke-width:3; stroke:#ffffff; fill:none;">
+                    <polyline points="9.57 15.41 12.17 24.05 20.81 21.44" style="stroke-linecap:round;"/>
+                    <path d="M26.93,41.41V23a.09.09,0,0,0-.16-.07s-2.58,3.69-4.17,4.78" style="stroke-linecap:round;"/>
+                    <rect x="32.19" y="22.52" width="11.41" height="18.89" rx="5.7"/>
+                    <path d="M12.14,23.94a21.91,21.91,0,1,1-.91,13.25" style="stroke-linecap:round;"/>
+                  </svg>
+                </Button>
+                <Button
+                  class={styles.controlButton}
+                  square
+                  onClick={seekForward}
+                >
+                  <svg width="800px" height="800px" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="stroke-width:3; stroke:#ffffff; fill:none;">
+                    <polyline points="54.43 15.41 51.83 24.05 43.19 21.44" style="stroke-linecap:round;"/>
+                    <path d="M24.00,41.41V23a.09.09,0,0,0-.16-.07s-2.58,3.69-4.17,4.78" style="stroke-linecap:round;"/>
+                    <rect x="30.00" y="22.52" width="11.41" height="18.89" rx="5.7"/>
+                    <path d="M51.86,23.94a21.91,21.91,0,1,0,.91,13.25" style="stroke-linecap:round;"/>
+                  </svg>
+                </Button>
+                <div class={styles.time}>
+                  {formatDuration(progress || 0)}
+                  {' / '}
+                  {formatDuration(effectiveDuration || 0)}
+                </div>
+              </div>
 
-        <Range
-          class={styles.progress}
-          value={progress}
-          min={0}
-          max={effectiveDuration || 0}
-          step={0.001}
-          onChange={changeProgress}
-        />
-
-        <div class={styles.time}>
-          {progress ? formatDuration(progress) : '00:00'}
-          {' / '}
-          {effectiveDuration ? formatDuration(effectiveDuration) : '00:00'}
+              {fullscreenElRef && (
+                <Button
+                  class={styles.controlButton}
+                  icon={isFullscreen ? 'fullscreen-exit' : 'fullscreen'}
+                  square
+                  onClick={toggleFullscreen}
+                />
+              )}
+            </div>
+          </div>
         </div>
-      </div>
+      )}
+
+      {isAudio && (
+        <Fragment>
+          <audio
+            ref={playerRef}
+            class={cn(
+              outerStyles,
+              styles.audio,
+              hidden && styles._hidden
+            )}
+            src={isActive ? (url || undefined) : undefined}
+            preload="auto"
+            controls={false}
+            autoPlay={isSafari}
+            playsInline
+            onPlay={handlePlayStart}
+            onPlaying={handlePlayStart}
+            onWaiting={handleWaiting}
+            onCanPlay={isSafari ? undefined : handleCanPlay}
+            onCanPlayThrough={isSafari ? handleCanPlay : undefined}
+            onLoadedMetadata={updateParsedDuration}
+            onDurationChange={updateParsedDuration}
+          />
+
+          <div
+            class={cn(
+              styles.description,
+              (!url || streamLoading || (isFullscreen && !controlsHidden)) && styles._transparent
+            )}
+            onClick={handleContentClick}
+          >
+            {[description?.performer, description?.title].map(text => (
+              <div class={styles.descriptionText} key={text}>
+                {text}
+              </div>
+            ))}
+          </div>
+
+          {!!url && !streamLoading && isFullscreen && (
+            <Button
+              class={cn(
+                styles.playButton,
+                controlsHidden && styles._hidden,
+                styles._border
+              )}
+              icon={playing ? 'pause' : 'play'}
+              square
+              onClick={togglePlay}
+            />
+          )}
+
+          {streamLoading && (
+            <Loader
+              class={styles.loader}
+              white={isFullscreen}
+              big
+            />
+          )}
+
+          <div
+            class={cn(
+              styles.controls,
+              styles._audio,
+              (!url || (isSafari && streamLoading)) && styles._disabled,
+              controlsHidden && styles._hidden,
+              isFullscreen && styles._fullscreen
+            )}
+            onClick={prevent}
+            onMouseMove={prevent}
+            onTouchMove={prevent}
+          >
+            <Button
+              icon={playing ? 'pause' : 'play'}
+              square
+              onClick={togglePlay}
+            />
+            <Range
+              class={styles.progress}
+              value={progress}
+              min={0}
+              max={effectiveDuration || 0}
+              step={0.001}
+              onChange={changeProgress}
+            />
+            <div class={styles.time}>
+              {progress ? formatDuration(progress) : '00:00'}
+              {' / '}
+              {effectiveDuration ? formatDuration(effectiveDuration) : '00:00'}
+            </div>
+          </div>
+        </Fragment>
+      )}
     </Fragment>
   )
 })

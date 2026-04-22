@@ -19,10 +19,12 @@ type Props = {
   size: number
   displaySize: DisplaySize
   mediaElRef?: RefObject<HTMLImageElement>
+  viewerElRef?: RefObject<HTMLDivElement>
   isFirst?: boolean
   isLast?: boolean
   isFullscreen: boolean
   isFakeFullscreen?: boolean
+  hideFullscreenButton?: boolean
   transformRef: RefObject<Transform>
   setTransformRef: RefObject<(transform: Transform) => void>
   setTransitionRef: RefObject<(transition: boolean) => void>
@@ -59,10 +61,12 @@ export const MediaViewer: FC<Props> = memo(({
   name,
   displaySize,
   mediaElRef,
+  viewerElRef,
   isFirst,
   isLast,
   isFullscreen,
   isFakeFullscreen,
+  hideFullscreenButton,
   transformRef,
   setTransformRef,
   setTransitionRef,
@@ -72,7 +76,8 @@ export const MediaViewer: FC<Props> = memo(({
   onClose
 }) => {
   const { closeSlide, closeSlideRef } = useSlide()
-  const mediaViewerElRef = useRef<HTMLDivElement>(null)
+  const localMediaViewerElRef = useRef<HTMLDivElement>(null)
+  const mediaViewerElRef = viewerElRef || localMediaViewerElRef
   const sliderElRef = useRef<HTMLDivElement>(null)
   const pointerTrackerRef = useRef<PointerTracker|null>(null)
   const startCenterRef = useRef<IntitialCenter|null>(null)
@@ -319,6 +324,7 @@ export const MediaViewer: FC<Props> = memo(({
       )}
 
       <Fullscreen
+        class={cn(hideFullscreenButton && styles.hiddenFullscreen)}
         isFullscreen={isFullscreen}
         forwardedRef={mediaViewerElRef}
         onChange={onFullscreenChange}

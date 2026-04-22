@@ -19,6 +19,7 @@ type Props = {
   y: number
   scale: number
   mediaElRef?: RefObject<HTMLImageElement>
+  fullscreenElRef?: RefObject<HTMLDivElement>
   transition: boolean
   displaySize: DisplaySize
   isActive?: boolean
@@ -34,6 +35,7 @@ export const StorageContentMessagesMediaViewerItem: FC<Props> = memo(({
   y,
   scale,
   mediaElRef,
+  fullscreenElRef,
   transition,
   displaySize,
   isActive,
@@ -143,6 +145,7 @@ export const StorageContentMessagesMediaViewerItem: FC<Props> = memo(({
       y={y}
       scale={scale}
       mediaElRef={isImage ? mediaElRef : undefined}
+      fullscreenElRef={fullscreenElRef}
       transition={transition}
       displaySize={displaySize}
       isActive={isActive}
